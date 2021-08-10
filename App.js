@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Image, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -49,10 +50,10 @@ export default function App() {
       {isLoading ? null : userToken === null ? ( // We haven't finished checking for the token yet
         // No token found, user isn't signed in
         <Stack.Navigator>
-          <Stack.Screen name="SignIn">
+          <Stack.Screen name="SignIn" options={{ headerShown: false }}>
             {(props) => <SignInScreen {...props} setToken={setToken} />}
           </Stack.Screen>
-          <Stack.Screen name="SignUp">
+          <Stack.Screen name="SignUp" options={{ headerShown: false }}>
             {(props) => <SignUpScreen {...props} setToken={setToken} />}
           </Stack.Screen>
         </Stack.Navigator>
@@ -68,9 +69,9 @@ export default function App() {
                 }}
               >
                 <Tab.Screen
-                  name="Home"
+                  name="TabHome"
                   options={{
-                    tabBarLabel: "Home",
+                    tabBarLabel: "TabHome",
                     tabBarIcon: ({ color, size }) => (
                       <Ionicons name={"ios-home"} size={size} color={color} />
                     ),
@@ -101,9 +102,9 @@ export default function App() {
                   )}
                 </Tab.Screen>
                 <Tab.Screen
-                  name="Settings"
+                  name="TabSettings"
                   options={{
-                    tabBarLabel: "Settings",
+                    tabBarLabel: "TabSettings",
                     tabBarIcon: ({ color, size }) => (
                       <Ionicons
                         name={"ios-options"}
