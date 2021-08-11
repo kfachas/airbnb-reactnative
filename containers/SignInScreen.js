@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import {
   Text,
-  TextInput,
   View,
   TouchableOpacity,
   StyleSheet,
@@ -13,12 +12,14 @@ import {
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Input from "../components/Input";
 export default function SignInScreen({ setToken, navigation }) {
   const [hidePassword, setHidePassword] = useState(true);
   const [values, setValues] = useState({});
   const [onPress, setOnPress] = useState(false);
   const [errorNotCorrect, setErrorNotCorrect] = useState();
   const [errorFieldEmpty, setErrorFieldEmpty] = useState();
+  const obj = { ...values };
   const handleSubmit = async () => {
     setOnPress(true);
     setErrorNotCorrect(false);
@@ -40,6 +41,7 @@ export default function SignInScreen({ setToken, navigation }) {
       console.log(error.message);
     }
   };
+  console.log(obj);
   return (
     <SafeAreaView
       style={{
@@ -69,32 +71,29 @@ export default function SignInScreen({ setToken, navigation }) {
         <View
           style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
         >
-          <TextInput
+          <Input
             style={styles.input}
             placeholder="email"
             textContentType="emailAddress"
-            onChangeText={(text) => {
-              const obj = { ...values };
-              obj.email = text;
-              setValues(obj);
-            }}
+            type="email"
+            values={values}
+            setValues={setValues}
           />
+
           <View
             style={[
               styles.input,
               { flexDirection: "row", justifyContent: "space-between" },
             ]}
           >
-            <TextInput
+            <Input
               style={{ flex: 1 }}
               placeholder="Password"
-              secureTextEntry={hidePassword ? true : false}
-              textContentType={"newPassword"}
-              onChangeText={(text) => {
-                const obj = { ...values };
-                obj.password = text;
-                setValues(obj);
-              }}
+              secure={hidePassword ? true : false}
+              type="password"
+              textContentType="newPassword"
+              values={values}
+              setValues={setValues}
             />
             {hidePassword ? (
               <Entypo

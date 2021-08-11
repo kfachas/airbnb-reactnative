@@ -15,6 +15,7 @@ import { Entypo } from "@expo/vector-icons";
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Constants from "expo-constants";
+import Input from "../components/Input";
 export default function SignUpScreen({ navigation }) {
   const [values, setValues] = useState({});
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -32,31 +33,38 @@ export default function SignUpScreen({ navigation }) {
     setErrorUsername(false);
     try {
       if (
-        values.password !== "undefined" &&
-        values.password === confirmPassword
+        values.password &&
+        values.description &&
+        values.username &&
+        confirmPassword &&
+        values.email
       ) {
-        const response = await axios.post(
-          "https://express-airbnb-api.herokuapp.com/user/sign_up",
-          values
-        );
-        alert("Inscription confirmed ! You can sign In now !");
-        navigation.navigate("SignIn");
+        if (
+          values.password !== "undefined" &&
+          values.password === confirmPassword
+        ) {
+          const response = await axios.post(
+            "https://express-airbnb-api.herokuapp.com/user/sign_up",
+            values
+          );
+          alert("Inscription confirmed ! You can sign In now !");
+          navigation.navigate("SignIn");
+        } else {
+          setOnPress(false);
+          if (!values.password) {
+            setErrorFieldEmpty(true);
+          } else {
+            setErrorMessagePassword(true);
+          }
+        }
       } else {
         setOnPress(false);
-        if (!values.password) {
-          setErrorFieldEmpty(true);
-        } else {
-          setErrorMessagePassword(true);
-        }
+        setErrorFieldEmpty(true);
       }
     } catch (error) {
       setOnPress(false);
       console.log(error.response.data.error);
-      if (error.response.data.error === "Missing parameters") {
-        setErrorFieldEmpty(true);
-      } else if (
-        error.response.data.error === "This email already has an account."
-      ) {
+      if (error.response.data.error === "This email already has an account.") {
         setErrorMail(true);
       } else if (
         error.response.data.error === "This username already has an account."
@@ -65,6 +73,8 @@ export default function SignUpScreen({ navigation }) {
       }
     }
   };
+  console.log(values);
+  console.log(confirmPassword);
   return (
     <SafeAreaView
       style={{
@@ -91,29 +101,23 @@ export default function SignUpScreen({ navigation }) {
         <View
           style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
         >
-          <TextInput
+          <Input
             style={styles.input}
             placeholder="Email"
             textContentType="emailAddress"
-            onChangeText={(text) => {
-              const obj = { ...values };
-              console.log();
-              obj.email = text;
-              setValues(obj);
-            }}
+            setValues={setValues}
+            values={values}
+            type="email"
           />
-          <TextInput
+          <Input
             style={styles.input}
-            placeholder="Username"
+            placeholder="username"
             textContentType="username"
-            onChangeText={(text) => {
-              const obj = { ...values };
-              obj.username = text;
-              setValues(obj);
-            }}
+            setValues={setValues}
+            values={values}
+            type="username"
           />
-
-          <TextInput
+          <Input
             style={[
               styles.input,
               { height: 100, borderWidth: 2, textAlignVertical: "top" },
@@ -121,25 +125,22 @@ export default function SignUpScreen({ navigation }) {
             placeholder="describe yourself"
             multiline={true}
             numberOfLines={4}
-            onChangeText={(text) => {
-              const obj = { ...values };
-              obj.description = text;
-              setValues(obj);
-            }}
+            setValues={setValues}
+            values={values}
+            type="description"
           />
 
           <View style={[styles.input, { flexDirection: "row" }]}>
-            <TextInput
+            <Input
               style={{ flex: 1 }}
               placeholder="Password"
-              secureTextEntry={hidePassword ? true : false}
+              type="password"
+              secure={hidePassword ? true : false}
               textContentType="newPassword"
-              onChangeText={(text) => {
-                const obj = { ...values };
-                obj.password = text;
-                setValues(obj);
-              }}
+              setValues={setValues}
+              values={values}
             />
+
             {hidePassword ? (
               <Entypo
                 name="eye"
@@ -156,6 +157,7 @@ export default function SignUpScreen({ navigation }) {
               />
             )}
           </View>
+
           <TextInput
             style={styles.input}
             placeholder="confirmPassword"

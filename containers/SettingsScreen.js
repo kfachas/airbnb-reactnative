@@ -10,11 +10,7 @@ import {
 export default function SettingsScreen({ setToken }) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <ScrollView
-        contentContainerStyle={{
-          flex: 1,
-        }}
-      >
+      <ScrollView>
         <StatusBar barStyle="dark-content" backgroundColor="white" />
         <Text>Hello Settings</Text>
         <TouchableOpacity

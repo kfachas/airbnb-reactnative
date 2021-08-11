@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Image, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-
+import { Image } from "react-native";
 // Screens
 import HomeScreen from "./containers/HomeScreen";
-import ProfileScreen from "./containers/ProfileScreen";
+import RoomsScreen from "./containers/RoomsScreen";
 import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
 import SettingsScreen from "./containers/SettingsScreen";
-
+import AroundMeScreen from "./containers/AroundMeScreen";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -59,55 +58,69 @@ export default function App() {
         </Stack.Navigator>
       ) : (
         // User is signed in
-        <Stack.Navigator>
-          <Stack.Screen name="Tab" options={{ headerShown: false }}>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="Tab">
             {() => (
               <Tab.Navigator
-                tabBarOptions={{
-                  activeTintColor: "tomato",
-                  inactiveTintColor: "gray",
+                screenOptions={{
+                  headerShown: false,
+                  tabBarActiveTintColor: "tomato",
+                  tabBarInactiveTintColor: "gray",
                 }}
               >
                 <Tab.Screen
                   name="TabHome"
                   options={{
-                    tabBarLabel: "TabHome",
+                    tabBarLabel: "Home",
                     tabBarIcon: ({ color, size }) => (
                       <Ionicons name={"ios-home"} size={size} color={color} />
                     ),
                   }}
                 >
                   {() => (
-                    <Stack.Navigator>
-                      <Stack.Screen
-                        name="Home"
-                        options={{
-                          title: "My App",
-                          headerStyle: { backgroundColor: "red" },
-                          headerTitleStyle: { color: "white" },
-                        }}
-                      >
-                        {() => <HomeScreen />}
+                    <Stack.Navigator
+                      screenOptions={{
+                        headerLeftLabelVisible: false,
+                        headerTintColor: "#F9575C",
+                        headerTitleAlign: "center",
+                        headerTitle: () => (
+                          <Image
+                            style={{
+                              width: 50,
+                              height: 50,
+                              marginBottom: 10,
+                            }}
+                            source={require("./assets/airbnb-logo.png")}
+                          />
+                        ),
+                      }}
+                    >
+                      <Stack.Screen name="Home">
+                        {(props) => <HomeScreen {...props} />}
                       </Stack.Screen>
 
                       <Stack.Screen
-                        name="Profile"
+                        name="Rooms"
                         options={{
-                          title: "User Profile",
+                          title: "Rooms",
                         }}
                       >
-                        {() => <ProfileScreen />}
+                        {() => <RoomsScreen />}
                       </Stack.Screen>
                     </Stack.Navigator>
                   )}
                 </Tab.Screen>
                 <Tab.Screen
-                  name="TabSettings"
+                  name="AroundMeTab"
                   options={{
-                    tabBarLabel: "TabSettings",
+                    tabBarLabel: "Around me",
                     tabBarIcon: ({ color, size }) => (
                       <Ionicons
-                        name={"ios-options"}
+                        name="location-outline"
                         size={size}
                         color={color}
                       />
@@ -115,7 +128,28 @@ export default function App() {
                   }}
                 >
                   {() => (
-                    <Stack.Navigator>
+                    <Stack.Navigator screenOptions={{ headerShown: false }}>
+                      <Stack.Screen name="AroundMe">
+                        {() => <AroundMeScreen setToken={setToken} />}
+                      </Stack.Screen>
+                    </Stack.Navigator>
+                  )}
+                </Tab.Screen>
+                <Tab.Screen
+                  name="TabSettings"
+                  options={{
+                    tabBarLabel: "My profile",
+                    tabBarIcon: ({ color, size }) => (
+                      <Ionicons
+                        name="person-outline"
+                        size={size}
+                        color={color}
+                      />
+                    ),
+                  }}
+                >
+                  {() => (
+                    <Stack.Navigator screenOptions={{ headerShown: false }}>
                       <Stack.Screen
                         name="Settings"
                         options={{ title: "Settings", tabBarLabel: "Settings" }}
