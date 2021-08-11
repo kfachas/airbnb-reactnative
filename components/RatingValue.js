@@ -9,7 +9,7 @@ const RatingValue = ({ ratingValue, reviews }) => {
     for (; counter < ratingValue; counter++) {
       tab.push(<Entypo name="star" size={24} color="orange" />);
     }
-    console.log(counter);
+
     if (counter < 5) {
       for (; counter < 5; counter++) {
         tab.push(<Entypo name="star" size={24} color="gray" />);

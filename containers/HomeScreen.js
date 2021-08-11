@@ -14,13 +14,12 @@ import {
 import axios from "axios";
 import LottieView from "lottie-react-native";
 import RatingValue from "../components/RatingValue";
-
+import Distance from "../components/Distance";
 const width = Dimensions.get("window").width;
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({ navigation, values }) {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState();
-
   useEffect(() => {
     try {
       const fetchData = async () => {
@@ -107,6 +106,7 @@ export default function HomeScreen({ navigation }) {
                     ratingValue={item.ratingValue}
                     reviews={item.reviews}
                   />
+                  <Distance values={values} itemLocal={item.location} />
                 </View>
                 <View>
                   <Image

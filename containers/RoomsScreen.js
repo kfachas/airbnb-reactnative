@@ -12,15 +12,12 @@ import {
   Dimensions,
   StyleSheet,
 } from "react-native";
-import * as Location from "expo-location";
-import * as Permissions from "expo-permissions";
 import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
 import MapView, { Marker } from "react-native-maps";
 import RatingValue from "../components/RatingValue";
 
 const width = Dimensions.get("window").width;
-console.log(Location);
 export default function RoomsScreen() {
   const { params } = useRoute();
   const [isLoading, setIsLoading] = useState(true);
