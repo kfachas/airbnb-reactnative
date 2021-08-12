@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import RatingValue from "../components/RatingValue";
 
 const width = Dimensions.get("window").width;
@@ -131,6 +131,7 @@ export default function RoomsScreen() {
             latitudeDelta: 0.08,
             longitudeDelta: 0.08,
           }}
+          provider={PROVIDER_GOOGLE}
         >
           <Marker
             coordinate={{

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import {
   Text,
   StatusBar,
@@ -14,27 +13,28 @@ import {
 import axios from "axios";
 import LottieView from "lottie-react-native";
 import RatingValue from "../components/RatingValue";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Location from "expo-location";
 import Distance from "../components/Distance";
 const width = Dimensions.get("window").width;
 
-export default function HomeScreen({ navigation, values }) {
+export default function HomeScreen({ navigation }) {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState();
   useEffect(() => {
-    try {
-      const fetchData = async () => {
+    const fetchData = async () => {
+      try {
         const response = await axios.get(
           "https://express-airbnb-api.herokuapp.com/rooms"
         );
         setData(response.data);
         setIsLoading(false);
-      };
-      fetchData();
-    } catch (error) {
-      console.log(error.response);
-    }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
   }, []);
-
   return isLoading ? (
     <LottieView
       style={{
@@ -106,7 +106,7 @@ export default function HomeScreen({ navigation, values }) {
                     ratingValue={item.ratingValue}
                     reviews={item.reviews}
                   />
-                  <Distance values={values} itemLocal={item.location} />
+                  <Distance itemLocal={item.location} />
                 </View>
                 <View>
                   <Image

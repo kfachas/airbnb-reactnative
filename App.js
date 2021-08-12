@@ -15,72 +15,74 @@ import AroundMeScreen from "./containers/AroundMeScreen";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-import { getDistance, convertDistance } from "geolib";
 import * as Location from "expo-location";
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [userToken, setUserToken] = useState(null);
-  const [values, setValues] = useState({});
-  // localisation user
-  const [locationServiceEnabled, setLocationServiceEnabled] = useState(false);
-  const [displayCurrentAddress, setDisplayCurrentAddress] = useState(
-    "Wait, we are fetching you location..."
-  );
+  // const [values, setValues] = useState({});
+  // // localisation user
+  // const [locationServiceEnabled, setLocationServiceEnabled] = useState(false);
+  // const [displayCurrentAddress, setDisplayCurrentAddress] = useState(
+  //   "Wait, we are fetching you location..."
+  // );
 
-  useEffect(() => {
-    CheckIfLocationEnabled();
-    GetCurrentLocation();
-  }, []);
+  // useEffect(() => {
+  //   const CheckIfLocationEnabled = async () => {
+  //     let enabled = await Location.hasServicesEnabledAsync();
 
-  const CheckIfLocationEnabled = async () => {
-    let enabled = await Location.hasServicesEnabledAsync();
+  //     if (!enabled) {
+  //       alert(
+  //         "Location Service not enabled",
+  //         "Please enable your location services to continue",
+  //         [{ text: "OK" }],
+  //         { cancelable: false }
+  //       );
+  //     } else {
+  //       setLocationServiceEnabled(enabled);
+  //     }
+  //   };
+  //   const GetCurrentLocation = async () => {
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
 
-    if (!enabled) {
-      alert(
-        "Location Service not enabled",
-        "Please enable your location services to continue",
-        [{ text: "OK" }],
-        { cancelable: false }
-      );
-    } else {
-      setLocationServiceEnabled(enabled);
-    }
-  };
-  const GetCurrentLocation = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== "granted") {
+  //       const obj = { ...values };
+  //       obj.longitude = "undefined";
+  //       obj.latitude = "undefined";
+  //       setValues(obj);
+  //       Alert.alert(
+  //         "Permission not granted",
+  //         "Allow the app to use location service.",
+  //         [{ text: "OK" }],
+  //         { cancelable: false }
+  //       );
+  //     }
 
-    if (status !== "granted") {
-      Alert.alert(
-        "Permission not granted",
-        "Allow the app to use location service.",
-        [{ text: "OK" }],
-        { cancelable: false }
-      );
-    }
+  //     let { coords } = await Location.getCurrentPositionAsync();
 
-    let { coords } = await Location.getCurrentPositionAsync();
+  //     if (coords) {
+  //       const { latitude, longitude } = coords;
+  //       const obj = { ...values };
+  //       obj.latitude = latitude;
+  //       obj.longitude = longitude;
+  //       setValues(obj);
+  //       setIsLoading(false);
+  //       let response = await Location.reverseGeocodeAsync({
+  //         latitude,
+  //         longitude,
+  //       });
+  //       // pour avoir coordonnées précices de la localisation
+  //       //   for (let item of response) {
+  //       //     let address = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
 
-    if (coords) {
-      const { latitude, longitude } = coords;
-      const obj = { ...values };
-      obj.latitude = latitude;
-      obj.longitude = longitude;
-      setValues(obj);
-      setIsLoading(false);
-      let response = await Location.reverseGeocodeAsync({
-        latitude,
-        longitude,
-      });
-      // pour avoir coordonnées précices de la localisation
-      //   for (let item of response) {
-      //     let address = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
-
-      // setDisplayCurrentAddress(address);
-      //   }
-    }
-  };
-
-  // Auth user
+  //       // setDisplayCurrentAddress(address);
+  //       //   }
+  //     }
+  //   };
+  //   CheckIfLocationEnabled();
+  //   GetCurrentLocation();
+  // }, []);
+  // console.log(values);
+  // // Auth user
 
   const setToken = async (token) => {
     if (token) {
@@ -100,13 +102,13 @@ export default function App() {
 
       // This will switch to the App screen or Auth screen and this loading
       // screen will be unmounted and thrown away.
+
       setIsLoading(false);
       setUserToken(userToken);
     };
 
     bootstrapAsync();
   }, []);
-
   return (
     <NavigationContainer>
       {isLoading ? null : userToken === null ? ( // We haven't finished checking for the token yet
@@ -163,7 +165,7 @@ export default function App() {
                       }}
                     >
                       <Stack.Screen name="Home">
-                        {(props) => <HomeScreen {...props} values={values} />}
+                        {(props) => <HomeScreen {...props} />}
                       </Stack.Screen>
 
                       <Stack.Screen
