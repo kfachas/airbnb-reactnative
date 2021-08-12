@@ -15,74 +15,9 @@ import AroundMeScreen from "./containers/AroundMeScreen";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-import * as Location from "expo-location";
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [userToken, setUserToken] = useState(null);
-  // const [values, setValues] = useState({});
-  // // localisation user
-  // const [locationServiceEnabled, setLocationServiceEnabled] = useState(false);
-  // const [displayCurrentAddress, setDisplayCurrentAddress] = useState(
-  //   "Wait, we are fetching you location..."
-  // );
-
-  // useEffect(() => {
-  //   const CheckIfLocationEnabled = async () => {
-  //     let enabled = await Location.hasServicesEnabledAsync();
-
-  //     if (!enabled) {
-  //       alert(
-  //         "Location Service not enabled",
-  //         "Please enable your location services to continue",
-  //         [{ text: "OK" }],
-  //         { cancelable: false }
-  //       );
-  //     } else {
-  //       setLocationServiceEnabled(enabled);
-  //     }
-  //   };
-  //   const GetCurrentLocation = async () => {
-  //     let { status } = await Location.requestForegroundPermissionsAsync();
-
-  //     if (status !== "granted") {
-  //       const obj = { ...values };
-  //       obj.longitude = "undefined";
-  //       obj.latitude = "undefined";
-  //       setValues(obj);
-  //       Alert.alert(
-  //         "Permission not granted",
-  //         "Allow the app to use location service.",
-  //         [{ text: "OK" }],
-  //         { cancelable: false }
-  //       );
-  //     }
-
-  //     let { coords } = await Location.getCurrentPositionAsync();
-
-  //     if (coords) {
-  //       const { latitude, longitude } = coords;
-  //       const obj = { ...values };
-  //       obj.latitude = latitude;
-  //       obj.longitude = longitude;
-  //       setValues(obj);
-  //       setIsLoading(false);
-  //       let response = await Location.reverseGeocodeAsync({
-  //         latitude,
-  //         longitude,
-  //       });
-  //       // pour avoir coordonnées précices de la localisation
-  //       //   for (let item of response) {
-  //       //     let address = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
-
-  //       // setDisplayCurrentAddress(address);
-  //       //   }
-  //     }
-  //   };
-  //   CheckIfLocationEnabled();
-  //   GetCurrentLocation();
-  // }, []);
-  // console.log(values);
-  // // Auth user
 
   const setToken = async (token) => {
     if (token) {
@@ -95,13 +30,8 @@ export default function App() {
   };
 
   useEffect(() => {
-    // Fetch the token from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
-      // We should also handle error for production apps
       const userToken = await AsyncStorage.getItem("userToken");
-
-      // This will switch to the App screen or Auth screen and this loading
-      // screen will be unmounted and thrown away.
 
       setIsLoading(false);
       setUserToken(userToken);
@@ -111,8 +41,7 @@ export default function App() {
   }, []);
   return (
     <NavigationContainer>
-      {isLoading ? null : userToken === null ? ( // We haven't finished checking for the token yet
-        // No token found, user isn't signed in
+      {isLoading ? null : userToken === null ? (
         <Stack.Navigator>
           <Stack.Screen name="SignIn" options={{ headerShown: false }}>
             {(props) => <SignInScreen {...props} setToken={setToken} />}
@@ -122,7 +51,6 @@ export default function App() {
           </Stack.Screen>
         </Stack.Navigator>
       ) : (
-        // User is signed in
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
@@ -193,7 +121,21 @@ export default function App() {
                   }}
                 >
                   {() => (
-                    <Stack.Navigator screenOptions={{ headerShown: false }}>
+                    <Stack.Navigator
+                      screenOptions={{
+                        headerTitleAlign: "center",
+                        headerTitle: () => (
+                          <Image
+                            style={{
+                              width: 50,
+                              height: 50,
+                              marginBottom: 10,
+                            }}
+                            source={require("./assets/airbnb-logo.png")}
+                          />
+                        ),
+                      }}
+                    >
                       <Stack.Screen name="AroundMe">
                         {(props) => (
                           <AroundMeScreen {...props} setToken={setToken} />

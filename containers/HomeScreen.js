@@ -13,8 +13,6 @@ import {
 import axios from "axios";
 import LottieView from "lottie-react-native";
 import RatingValue from "../components/RatingValue";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Location from "expo-location";
 import Distance from "../components/Distance";
 const width = Dimensions.get("window").width;
 
@@ -28,7 +26,9 @@ export default function HomeScreen({ navigation }) {
           "https://express-airbnb-api.herokuapp.com/rooms"
         );
         setData(response.data);
-        setIsLoading(false);
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 2000);
       } catch (error) {
         console.log(error);
       }
@@ -106,7 +106,7 @@ export default function HomeScreen({ navigation }) {
                     ratingValue={item.ratingValue}
                     reviews={item.reviews}
                   />
-                  <Distance itemLocal={item.location} />
+                  {/* <Distance itemLocal={item.location} /> */}
                 </View>
                 <View>
                   <Image
