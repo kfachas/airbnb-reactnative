@@ -10,7 +10,7 @@ import HomeScreen from "./containers/HomeScreen";
 import RoomsScreen from "./containers/RoomsScreen";
 import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
-import SettingsScreen from "./containers/SettingsScreen";
+import ProfileScreen from "./containers/ProfileScreen";
 import AroundMeScreen from "./containers/AroundMeScreen";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -158,12 +158,28 @@ export default function App() {
                   }}
                 >
                   {() => (
-                    <Stack.Navigator screenOptions={{ headerShown: false }}>
-                      <Stack.Screen
-                        name="Settings"
-                        options={{ title: "Settings", tabBarLabel: "Settings" }}
-                      >
-                        {() => <SettingsScreen setToken={setToken} />}
+                    <Stack.Navigator
+                      screenOptions={{
+                        headerTitleAlign: "center",
+                        headerTitle: () => (
+                          <Image
+                            style={{
+                              width: 50,
+                              height: 50,
+                              marginBottom: 10,
+                            }}
+                            source={require("./assets/airbnb-logo.png")}
+                          />
+                        ),
+                      }}
+                    >
+                      <Stack.Screen name="MyProfile">
+                        {() => (
+                          <ProfileScreen
+                            userToken={userToken}
+                            setToken={setToken}
+                          />
+                        )}
                       </Stack.Screen>
                     </Stack.Navigator>
                   )}

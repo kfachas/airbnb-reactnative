@@ -10,21 +10,14 @@ import { Dimensions } from "react-native";
 const width = Dimensions.get("window").width;
 const height = Dimensions.get("window").height;
 //  Location
-import Location, { installWebGeolocationPolyfill } from "expo-location";
-import MapView, {
-  Callout,
-  Circle,
-  Marker,
-  PROVIDER_GOOGLE,
-} from "react-native-maps";
+import * as Location from "expo-location";
+import MapView, { Circle, Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 // navigator.geolocation = require("@react-native-community/geolocation");
 // request
 import axios from "axios";
 
 export default function AroundMeScreen({ navigation }) {
-  const [okay, setOkay] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [coords, setCoords] = useState();
   const [latitude, setLatitude] = useState();
@@ -33,39 +26,30 @@ export default function AroundMeScreen({ navigation }) {
     const getPermission = async () => {
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
+
+        let response;
         if (status === "granted") {
-          // const location = await Location.getCurrentPositionAsync();
-          setLongitude(2.28322);
-          setLatitude(48.863918);
-          setOkay(true);
-          setLoading(false);
+          const location = await Location.getCurrentPositionAsync();
+          setLongitude(location.coords.longitude);
+          setLatitude(location.coords.latitude);
+
+          response = await axios.get(
+            `https://express-airbnb-api.herokuapp.com/rooms/around?latitude=${location.coords.latitude}&longitude=${location.coords.longitude}`
+          );
         } else {
-          setLongitude();
-          setLatitude("");
-          setLoading(false);
+          response = await axios.get(
+            `https://express-airbnb-api.herokuapp.com/rooms/around`
+          );
         }
+
+        setCoords(response.data);
+        setIsLoading(false);
       } catch (error) {
         console.log(error);
       }
     };
     getPermission();
-  }, []);
-  useEffect(() => {
-    if (!loading) {
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(
-            `https://express-airbnb-api.herokuapp.com/rooms/around?latitude=${latitude}&longitude=${longitude}`
-          );
-          setCoords(response.data);
-          setIsLoading(false);
-        } catch (error) {
-          console.log(error.message);
-        }
-      };
-      fetchData();
-    }
-  }, [loading]);
+  }, [latitude, longitude]);
 
   return isLoading ? (
     <LottieView
@@ -87,7 +71,7 @@ export default function AroundMeScreen({ navigation }) {
           fetchDetails={true}
           onPress={(data, details = null) => {
             // details exist if fetchDetails = true
-            console.log("DETAILS =>> ", Object.key(details));
+            console.log("VALUES =>> ", Object.values(details));
           }}
           query={{
             key: "AIzaSyALKaefFkdtwubPa1iOhQbhWZKGTlsnIYI",
@@ -108,23 +92,14 @@ export default function AroundMeScreen({ navigation }) {
       <MapView
         style={{ width, height: 600 }}
         provider={PROVIDER_GOOGLE}
-        initialRegion={
-          okay
-            ? {
-                latitude: latitude, // User
-                longitude: longitude,
-                latitudeDelta: 0.1,
-                longitudeDelta: 0.1,
-              }
-            : {
-                latitude: 48.859403, // Paris Centre
-                longitude: 2.342836,
-                latitudeDelta: 0.2,
-                longitudeDelta: 0.2,
-              }
-        }
+        initialRegion={{
+          latitude: latitude ? latitude : 48.859403, // User
+          longitude: longitude ? longitude : 2.342836,
+          latitudeDelta: 0.1,
+          longitudeDelta: 0.1,
+        }}
       >
-        {okay && (
+        {latitude && longitude && (
           <Marker
             coordinate={{
               latitude, // User
@@ -155,13 +130,14 @@ export default function AroundMeScreen({ navigation }) {
             <Ionicons name="location" size={35} color="#F9575C" />
           </Marker>
         )}
-        <View>
+        {latitude && longitude && (
           <Circle
             center={{ longitude, latitude }}
             radius={5000}
             fillColor="rgba(64,224,208, 0.5)"
           />
-        </View>
+        )}
+
         {coords.map((elem, index) => {
           return (
             <Marker
@@ -190,7 +166,7 @@ export default function AroundMeScreen({ navigation }) {
               >
                 {elem.title}
               </Text>
-              {okay && (
+              {latitude && longitude && (
                 <Distance
                   itemLocal={elem.location}
                   latitude={latitude}

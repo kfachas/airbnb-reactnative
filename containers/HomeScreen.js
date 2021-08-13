@@ -13,7 +13,7 @@ import {
 import axios from "axios";
 import LottieView from "lottie-react-native";
 import RatingValue from "../components/RatingValue";
-import Distance from "../components/Distance";
+
 const width = Dimensions.get("window").width;
 
 export default function HomeScreen({ navigation }) {
@@ -28,7 +28,7 @@ export default function HomeScreen({ navigation }) {
         setData(response.data);
         setTimeout(() => {
           setIsLoading(false);
-        }, 2000);
+        }, 1000);
       } catch (error) {
         console.log(error);
       }

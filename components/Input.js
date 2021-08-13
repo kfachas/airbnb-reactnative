@@ -10,6 +10,8 @@ const Input = ({
   style,
   multiline,
   numberOfLines,
+
+  value,
 }) => {
   return (
     <TextInput
@@ -24,6 +26,7 @@ const Input = ({
         obj[type] = text;
         setValues(obj);
       }}
+      value={value}
     />
   );
 };

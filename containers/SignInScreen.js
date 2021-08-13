@@ -13,6 +13,7 @@ import {
 import { Entypo } from "@expo/vector-icons";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Input from "../components/Input";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function SignInScreen({ setToken, navigation }) {
   const [hidePassword, setHidePassword] = useState(true);
   const [values, setValues] = useState({});
@@ -29,7 +30,8 @@ export default function SignInScreen({ setToken, navigation }) {
         "https://express-airbnb-api.herokuapp.com/user/log_in",
         values
       );
-      setToken(response.token);
+      await AsyncStorage.setItem("userItems", response.data.id);
+      setToken(response.data.token);
     } catch (error) {
       setOnPress(false);
       if (error.response.data.error === "Unauthorized") {
