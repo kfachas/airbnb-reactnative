@@ -27,7 +27,7 @@ export default function ProfileScreen({ userToken, setToken }) {
   const [userData, setUserData] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
-  const [newUserData, setNewUserData] = useState({});
+  const [newUserData, setNewUserData] = useState();
 
   // image of user
   const [selectedPicture, setSelectedPicture] = useState(null);
@@ -45,7 +45,7 @@ export default function ProfileScreen({ userToken, setToken }) {
           }
         );
         setUserData(response.data);
-        console.log(response.data);
+        // console.log(response.data);
         setIsLoading(false);
       } catch (error) {
         console.log(error.response);
@@ -85,14 +85,28 @@ export default function ProfileScreen({ userToken, setToken }) {
         );
       }
       setUploading(false);
+
       if (newUserData) {
+        let body = {};
+        if (newUserData.email) {
+          body.email = newUserData.email;
+        } else {
+          body.email = userData.email;
+        }
+        if (newUserData.description) {
+          body.description = newUserData.description;
+        } else {
+          body.description = userData.description;
+        }
+        if (newUserData.username) {
+          body.username = newUserData.username;
+        } else {
+          body.username = userData.username;
+        }
+
         const response = await axios.put(
           "https://express-airbnb-api.herokuapp.com/user/update",
-          {
-            email: newUserData.email,
-            description: newUserData.description,
-            username: newUserData.username,
-          },
+          body,
           {
             headers: {
               Authorization: `Bearer ${userToken}`,
@@ -102,7 +116,7 @@ export default function ProfileScreen({ userToken, setToken }) {
         console.log(response);
       }
     } catch (error) {
-      console.log(error.message);
+      console.log(error.response.data);
     }
   };
   return isLoading ? (
@@ -115,6 +129,7 @@ export default function ProfileScreen({ userToken, setToken }) {
         paddingTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
       }}
     >
+      <StatusBar barStyle="dark-content" backgroundColor="white" />
       <ScrollView
         contentContainerStyle={{
           flex: 1,
@@ -122,7 +137,6 @@ export default function ProfileScreen({ userToken, setToken }) {
           alignItems: "center",
         }}
       >
-        <StatusBar barStyle="dark-content" backgroundColor="white" />
         <View
           style={{
             flexDirection: "row",
@@ -226,7 +240,7 @@ export default function ProfileScreen({ userToken, setToken }) {
           <TextInput
             style={styles.input}
             defaultValue={userData.email}
-            onChange={(text) => {
+            onChangeText={(text) => {
               const obj = { ...newUserData };
               obj.email = text;
               setNewUserData(obj);
@@ -235,7 +249,7 @@ export default function ProfileScreen({ userToken, setToken }) {
           <TextInput
             style={styles.input}
             defaultValue={userData.username}
-            onChange={(text) => {
+            onChangeText={(text) => {
               const obj = { ...newUserData };
               obj.username = text;
               setNewUserData(obj);
@@ -249,7 +263,7 @@ export default function ProfileScreen({ userToken, setToken }) {
             defaultValue={userData.description}
             multiline={true}
             numberOfLines={4}
-            onChange={(text) => {
+            onChangeText={(text) => {
               const obj = { ...newUserData };
               obj.description = text;
               setNewUserData(obj);
